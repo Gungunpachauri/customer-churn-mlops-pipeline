@@ -1,0 +1,12 @@
+mlruns/
+data/raw/
+notebooks/
+__pycache__/
+.git/
+.env
+venv/
+frontend/node_modules/
+frontend/dist/
+artifacts/*.pkl
+*.ipynb
+*.pyc

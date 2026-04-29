@@ -1,5 +1,6 @@
 import great_expectations as ge
 from typing import Tuple, List
+import pandas as pd
 
 
 def validate_telco_data(df) -> Tuple[bool, List[str]]:
@@ -13,6 +14,12 @@ def validate_telco_data(df) -> Tuple[bool, List[str]]:
     """
     print("🔍 Starting data validation with Great Expectations...")
     
+    # Work on a copy and normalize numeric columns before GE numeric expectations.
+    df = df.copy()
+    for col in ["tenure", "MonthlyCharges", "TotalCharges"]:
+        if col in df.columns:
+            df[col] = pd.to_numeric(df[col], errors="coerce")
+
     # Convert pandas DataFrame to Great Expectations Dataset
     ge_df = ge.dataset.PandasDataset(df)
     
