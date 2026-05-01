@@ -5,7 +5,7 @@ import pandas as pd
 # Make sure Python can find your src package
 import sys
 sys.path.append(os.path.abspath("src"))
-
+# Import the functions to test
 from data.load_data import load_data
 from data.preprocess import preprocess_data
 from features.build_features import build_features
