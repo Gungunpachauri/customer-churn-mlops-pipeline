@@ -52,12 +52,12 @@ def _candidate_model_dirs() -> list[Path]:
     if env_model_dir:
         candidates.append(Path(env_model_dir))
 
-    # Docker default path
-    candidates.append(Path("/app/model"))
-
-    # Common local paths
+    # Prefer local development artifacts first to avoid platform-specific issues
     candidates.append(project_root / "artifacts" / "model")
     candidates.append(project_root / "model")
+
+    # Docker default path (check last)
+    candidates.append(Path("/app/model"))
 
     # Latest MLflow run artifact path, if present
     mlruns_glob = str(project_root / "mlruns" / "*" / "*" / "artifacts" / "model")
@@ -107,11 +107,12 @@ def _load_model_and_features_once() -> None:
             model = loaded_model
             FEATURE_COLS = feature_cols
             MODEL_DIR = str(candidate)
-            print(f"✅ Model loaded successfully from {MODEL_DIR}")
-            print(f"✅ Loaded {len(FEATURE_COLS)} feature columns from training")
+            print(f"Model loaded successfully from {MODEL_DIR}")
+            print(f"Loaded {len(FEATURE_COLS)} feature columns from training")
             return
         except Exception as e:
-            errors.append(f"{candidate} ({e})")
+            # Use repr(e) to avoid unicode/encoding issues when formatting
+            errors.append(f"{candidate} ({repr(e)})")
 
     _model_load_error = (
         "Model artifacts not found. Checked: " + "; ".join(errors) +
